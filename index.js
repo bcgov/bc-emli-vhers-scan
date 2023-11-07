@@ -1,9 +1,10 @@
+const Readable = require('stream').Readable;
 const express = require('express');
 const NodeClam = require('clamscan');
 require('dotenv').config();
 const app = express();
-const cors = require('cors')
-const fileUpload = require('express-fileupload')
+const cors = require('cors');
+const fileUpload = require('express-fileupload');
 const config = require('./config')
 const port = process.env.SERVER_PORT && process.env.SERVER_PORT !== '' ? process.env.SERVER_PORT : 3500;
 
@@ -20,22 +21,39 @@ app.use(async (req, _, next) => {
 app.use(fileUpload({ ...config.fileUploadConfig }))
 
 
-  // Get instance by resolving ClamScan promise object
-ClamScan.then(async clamscan => {
-	try {
-		const {isInfected, file, viruses} = await clamscan.isInfected('/some/file.zip')
-		if (isInfected) console.log(`${file} is infected with ${viruses}!`)
-		else console.log('File is harmless')
-	} catch (err) {
-		console.log('Error:', err.message)
-	}
-}).catch(err => {
-// Handle errors that may have occurred during initialization
-console.log('Initialization Error:', err.message)
-});
+const scanFile = async (file, clamscan) => {
+	const fileStream = Readable()
+	fileStream.push(file.data)
+	fileStream.push(null)
+	
+	// const result = await clamscan.isInfected(__dirname + '/tmp/filename');
+	const result = await clamscan.scanStream(fileStream);
 
-app.post('/virus-scan', (req, res) => {
-  res.send('Hello World!');
+	return {
+	  filename: file.name,
+	  is_infected: result.isInfected,
+	  viruses: result.viruses,
+	}
+  }
+
+app.post('/virus-scan', async (req, res) => {
+	if (!req.files || ! req.files.energuide) {
+		return res.status(409).json({
+			message: 'No energuide file provided for scan'
+		})
+	}
+	// await req.files.energuide.mv('./tmp/' + req.files.energuide.name);
+  const scanResult = await scanFile(req.files.energuide, req.clamscan);
+  console.log(scanResult);
+
+  if (scanResult.is_infected === true || scanFile.is_infected === null) {
+    return res.status(502).json({
+      clean: false
+    })
+  }
+  return res.status(200).json({
+    clean: true
+  });
 });
 
 app.listen(port, () => {
