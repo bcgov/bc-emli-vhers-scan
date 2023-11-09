@@ -57,5 +57,5 @@ app.post('/virus-scan', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Virus scan listening on port ${port}`);
 });
