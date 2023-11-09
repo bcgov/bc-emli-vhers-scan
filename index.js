@@ -6,7 +6,7 @@ const app = express();
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const config = require('./config')
-const port = process.env.SERVER_PORT && process.env.SERVER_PORT !== '' ? process.env.SERVER_PORT : 3500;
+const port = process.env.PORT && process.env.PORT !== '' ? parseInt(process.env.PORT) : 3500;
 
 app.use(express.json());
 app.use(cors())
