@@ -4,7 +4,7 @@ metadata:
   name: clamav-deploy
 parameters:
   - name: NAME_SPACE
-    value: af2668-tools
+    value: c82b4c-tools
     required: true
   - name: CPU_REQUEST
     value: "100m"
