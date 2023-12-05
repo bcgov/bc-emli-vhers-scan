@@ -138,7 +138,7 @@ objects:
                   protocol: TCP
               imagePullPolicy: Always
               terminationMessagePolicy: File
-              image: "${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}"
+              image: "${NAME}-${ZONE}:${IMAGE_TAG}"
           restartPolicy: Always
           terminationGracePeriodSeconds: 30
           dnsPolicy: ClusterFirst
