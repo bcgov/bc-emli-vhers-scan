@@ -12,7 +12,7 @@ parameters:
     required: true
   - name: IMAGE_TAG
     description: Image tag to use
-    value: latest
+    value: dev
   - name: NAME_SPACE
     value: c82b4c-tools
     required: true
@@ -92,7 +92,7 @@ objects:
               - ${NAME}
             from:
               kind: ImageStreamTag
-              name: "{NAME}-${ZONE}:${IMAGE_TAG}"
+              name: "${NAME}-${ZONE}:${IMAGE_TAG}"
         - type: ConfigChange
       replicas: ${{REPLICAS}}
       test: false
@@ -124,7 +124,7 @@ objects:
                 successThreshold: 1
                 failureThreshold: 3
               terminationMessagePath: /dev/termination-log
-              name: clamav
+              name: ${NAME}
               livenessProbe:
                 tcpSocket:
                   port: 3310
