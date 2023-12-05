@@ -19,7 +19,6 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [containers/clamav]
         include:
           - name: clamav
             file: containers/clamav/openshift/templates/clamav-dc.yaml
