@@ -31,7 +31,7 @@ jobs:
           keep_versions: 50
           package: ${{ matrix.package }}
           build_context: ${{ matrix.build_context }}
-          tag: latest
+          tag: dev
           triggers: ${{ matrix.triggers }}
 
 
@@ -58,6 +58,6 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
-          parameters: -p ZONE=prod -p PROMOTE=${{ github.repository }}/clamav:latest
+          parameters: -p ZONE=prod -p PROMOTE=${{ github.repository }}/clamav:dev
           repository: ${{ matrix.repository }}
           verification_path: ${{ matrix.verification_path }}
