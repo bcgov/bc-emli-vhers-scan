@@ -5,14 +5,19 @@ metadata:
 parameters:
   - name: NAME
     description: Module name
-    value: clamav-tools
+    value: clamav
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     value: tools
     required: true
+  - name: IMAGE_TAG
+    description: Image tag to use
+    value: latest
   - name: NAME_SPACE
     value: c82b4c-tools
     required: true
+  - name: DOMAIN
+    value: apps.silver.devops.gov.bc.ca
   - name: CPU_REQUEST
     value: "100m"
   - name: CPU_LIMIT
@@ -23,7 +28,32 @@ parameters:
     value: "2G"
   - name: REPLICAS
     value: "1"
+  - name: REGISTRY
+    description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
+    value: ghcr.io
+  - name: ORG_NAME
+    description: Organization name, e.g. bcgov
+    value: bcgov
+  - name: PROMOTE
+    description: Image (namespace/name:tag) to promote/import
+    value: /bcgov/bc-emli-vhers-scan/containers/clamav:latest
 objects:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: "${NAME}-${ZONE}"
+        name: "${NAME}-${ZONE}"
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - name: "${IMAGE_TAG}"
+          from:
+            kind: DockerImage
+            name: "${REGISTRY}/${PROMOTE}"
+          referencePolicy:
+            type: Local
   - kind: Service
     apiVersion: v1
     metadata:
