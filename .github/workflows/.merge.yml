@@ -30,6 +30,7 @@ jobs:
         with:
           keep_versions: 50
           package: ${{ matrix.package }}
+          build_context: ${{ matrix.build_context }}
           tag: latest
           triggers: ${{ matrix.triggers }}
 
