@@ -11,6 +11,49 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Find initial PR number (for merge queues)
+  vars:
+    name: Build and Deploy Vars
+    outputs:
+      tag: ${{ steps.deploys.outputs.tag }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Set Variables
+        id: deploys
+        run: |
+          # Get PR number (different process for merge queue)
+          if [ ${{ github.event_name }} == 'pull_request' ]
+          then
+            tag=${{ github.event.number }}
+          else
+            tag=$(echo ${{ github.event.merge_group.head_ref }} | grep -Eo "queue/main/pr-[0-9]+" | cut -d '-' -f2)
+          fi
+
+          echo "Summary ---"
+          echo -e "\tTag (PR no): ${tag}"
+          echo "tag=${tag}" >> $GITHUB_OUTPUT
+
+  # https://github.com/bcgov-nr/action-builder-ghcr
+  builds:
+    name: Builds
+    needs: [vars]
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        package: [containers/clamav]
+    timeout-minutes: 10
+    steps:
+      - uses: bcgov-nr/action-builder-ghcr@v2.0.0
+        with:
+          keep_versions: 50
+          package: ${{ matrix.package }}
+          tag: ${{ needs.vars.outputs.tag }}
+          tag_fallback: latest
+          triggers: ('${{ matrix.package }}/')
+
+
   deploys:
     name: Deploys Anitvirus
     environment: tools
