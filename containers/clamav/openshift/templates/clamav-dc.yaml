@@ -5,7 +5,7 @@ metadata:
 parameters:
   - name: NAME
     description: Module name
-    value: quickstart-openshift-backends
+    value: clamav-tools
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     value: tools
