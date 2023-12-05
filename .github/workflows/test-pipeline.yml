@@ -1,0 +1,34 @@
+name: test
+
+on:
+  pull_request:
+    branches: [dev]
+    types: [closed]
+
+jobs:
+  # https://github.com/bcgov-nr/action-builder-ghcr
+
+  deploys:
+    name: Deploys Anitvirus
+    environment: test
+    permissions:
+      issues: write
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: clamav
+            file: containers/clamav/openshift/templates/clamav-dc.yaml
+            overwrite: false
+
+    steps:
+      - uses: bcgov-nr/action-deployer-openshift@v2.0.0
+        with:
+          file: ${{ matrix.file }}
+          oc_namespace: ${{ vars.OC_NAMESPACE_TEST }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN_TEST }}
+          overwrite: ${{ matrix.overwrite }}
+          parameters: -p ZONE=prod -p NAME=${{ github.event.repository.name }}
+          repository: ${{ matrix.repository }}
+          verification_path: ${{ matrix.verification_path }}
