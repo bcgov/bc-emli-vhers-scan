@@ -14,7 +14,6 @@ jobs:
   # https://github.com/bcgov-nr/action-builder-ghcr
   builds:
     name: Builds
-    needs: [vars]
     runs-on: ubuntu-22.04
     permissions:
       packages: write
