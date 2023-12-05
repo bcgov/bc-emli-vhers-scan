@@ -36,14 +36,14 @@ parameters:
     value: bcgov
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
-    value: /bcgov/bc-emli-vhers-scan/containers/clamav:latest
+    value: bcgov/bc-emli-vhers-scan/clamav:latest
 objects:
   - apiVersion: v1
     kind: ImageStream
     metadata:
       labels:
         app: "${NAME}-${ZONE}"
-      name: "${NAME}-${ZONE}-tools"
+      name: "${NAME}-${ZONE}"
     spec:
       lookupPolicy:
         local: false
@@ -57,9 +57,9 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: clamav
+      name: ${NAME}
       labels:
-        app: clamav
+        app: ${NAME}
     spec:
       ports:
         - name: 3310-tcp
@@ -67,7 +67,7 @@ objects:
           port: 3310
           targetPort: 3310
       selector:
-        deploymentconfig: clamav
+        deploymentconfig: ${NAME}
       type: ClusterIP
       sessionAffinity: None
     status:
@@ -76,10 +76,10 @@ objects:
   - kind: DeploymentConfig
     apiVersion: apps.openshift.io/v1
     metadata:
-      name: clamav
+      name: ${NAME}
       generation: 1
       labels:
-        app: clamav
+        app: ${NAME}
     spec:
       strategy:
         type: Rolling
@@ -89,11 +89,10 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - clamav
+              - ${NAME}
             from:
               kind: ImageStreamTag
-              namespace: "${NAME_SPACE}"
-              name: "clamav:latest"
+              name: "{NAME}-${ZONE}:${IMAGE_TAG}"
         - type: ConfigChange
       replicas: ${{REPLICAS}}
       test: false
@@ -139,6 +138,7 @@ objects:
                   protocol: TCP
               imagePullPolicy: Always
               terminationMessagePolicy: File
+              image: "${NAME}-${ZONE}:${IMAGE_TAG}"
           restartPolicy: Always
           terminationGracePeriodSeconds: 30
           dnsPolicy: ClusterFirst
