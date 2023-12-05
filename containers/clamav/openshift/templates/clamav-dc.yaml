@@ -3,6 +3,13 @@ apiVersion: template.openshift.io/v1
 metadata:
   name: clamav-deploy
 parameters:
+  - name: NAME
+    description: Module name
+    value: quickstart-openshift-backends
+  - name: ZONE
+    description: Deployment zone, e.g. pr-### or prod
+    value: tools
+    required: true
   - name: NAME_SPACE
     value: c82b4c-tools
     required: true
