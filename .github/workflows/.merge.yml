@@ -1,0 +1,57 @@
+name: Merge
+
+on:
+  pull_request:
+    branches: [dev]
+    types: [closed]
+
+concurrency:
+  # PR open and close use the same group, allowing only one at a time
+  group: pr-${{ github.workflow }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  # https://github.com/bcgov-nr/action-builder-ghcr
+  builds:
+    name: Builds
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        package: [containers/clamav]
+    timeout-minutes: 10
+    steps:
+      - uses: bcgov-nr/action-builder-ghcr@v2.0.0
+        with:
+          keep_versions: 50
+          package: ${{ matrix.package }}
+          tag: latest
+          triggers: ('${{ matrix.package }}/')
+
+
+  deploys:
+    name: Deploys Anitvirus
+    needs: [builds]
+    environment: tools
+    permissions:
+      issues: write
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: clamav
+            file: containers/clamav/openshift/templates/clamav-dc.yaml
+            overwrite: false
+
+    steps:
+      - uses: bcgov-nr/action-deployer-openshift@v2.0.0
+        with:
+          file: ${{ matrix.file }}
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          overwrite: ${{ matrix.overwrite }}
+          parameters: -p ZONE=prod -p NAME=${{ github.event.repository.name }}
+          repository: ${{ matrix.repository }}
+          verification_path: ${{ matrix.verification_path }}
