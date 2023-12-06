@@ -156,7 +156,7 @@ objects:
     spec:
       host: "${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}"
       port:
-        targetPort: 3510-tcp
+        targetPort: 3500-tcp
       to:
         kind: Service
         name: "${NAME}-${ZONE}-${COMPONENT}"
