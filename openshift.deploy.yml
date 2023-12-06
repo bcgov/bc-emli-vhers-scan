@@ -1,21 +1,24 @@
 kind: Template
 apiVersion: template.openshift.io/v1
 metadata:
-  name: clamav-deploy
+  name: vs-deploy
 parameters:
   - name: NAME
     description: Module name
-    value: clamav
+    value: vhers-virus-scan
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     value: tools
     required: true
   - name: IMAGE_TAG
     description: Image tag to use
-    value: dev
-  - name: NAME_SPACE
+    value: latest
+  - name: COMPONENT
     value: c82b4c-tools
     required: true
+  - name: IMAGE_TAG
+    description: Image tag to use
+    value: latest
   - name: DOMAIN
     value: apps.silver.devops.gov.bc.ca
   - name: CPU_REQUEST
@@ -36,10 +39,10 @@ parameters:
     value: bcgov
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
-    value: bcgov/bc-emli-vhers-scan/clamav:latest
+    value: bcgov/vhers-virus-scan-tools/vhers-virus-scan:latest
 objects:
-  - apiVersion: v1
-    kind: ImageStream
+  - kind: ImageStream
+    apiVersion: v1
     metadata:
       labels:
         app: "${NAME}-${ZONE}"
@@ -57,22 +60,21 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: ${NAME}
+      name: "${NAME}-${ZONE}-${COMPONENT}"
       labels:
         app: ${NAME}
     spec:
       ports:
-        - name: 3310-tcp
+        - name: 3500-tcp
           protocol: TCP
-          port: 3310
-          targetPort: 3310
+          port: 3500
+          targetPort: 3500
       selector:
         deploymentconfig: ${NAME}
       type: ClusterIP
       sessionAffinity: None
     status:
       loadBalancer: {}
-
   - kind: DeploymentConfig
     apiVersion: apps.openshift.io/v1
     metadata:
@@ -91,19 +93,20 @@ objects:
             containerNames:
               - ${NAME}
             from:
+              from:
               kind: ImageStreamTag
               name: "${NAME}-${ZONE}:${IMAGE_TAG}"
         - type: ConfigChange
       replicas: ${{REPLICAS}}
       test: false
       selector:
-        app: clamav
-        deploymentconfig: clamav
+        app: ${NAME}
+        deploymentconfig: ${NAME}
       template:
         metadata:
           labels:
-            app: clamav
-            deploymentconfig: clamav
+            app: ${NAME}
+            deploymentconfig: ${NAME}
           annotations:
             openshift.io/generated-by: OpenShiftWebConsole
         spec:
@@ -117,7 +120,7 @@ objects:
                   memory: ${MEMORY_LIMIT}
               readinessProbe:
                 tcpSocket:
-                  port: 3310
+                  port: 3500
                 initialDelaySeconds: 240
                 timeoutSeconds: 3
                 periodSeconds: 10
@@ -127,14 +130,40 @@ objects:
               name: ${NAME}
               livenessProbe:
                 tcpSocket:
-                  port: 3310
+                  port: 3500
                 initialDelaySeconds: 240
                 timeoutSeconds: 3
                 periodSeconds: 10
                 successThreshold: 1
                 failureThreshold: 3
+              env:
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: db-hostname-dev
+                - name: DB_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: db-port-dev
+                - name: DB_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: db-name-dev
+                - name: DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: app-db-username-dev
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: app-db-password-dev
               ports:
-                - containerPort: 3310
+                - containerPort: 3500
                   protocol: TCP
               imagePullPolicy: Always
               terminationMessagePolicy: File
@@ -144,3 +173,20 @@ objects:
           dnsPolicy: ClusterFirst
           securityContext: {}
           schedulerName: default-scheduler
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      labels:
+        app: "${NAME}-${ZONE}"
+      name: "${NAME}-${ZONE}-${COMPONENT}"
+    spec:
+      host: "${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}"
+      port:
+        targetPort: 3500-tcp
+      to:
+        kind: Service
+        name: "${NAME}-${ZONE}-${COMPONENT}"
+        weight: 100
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect

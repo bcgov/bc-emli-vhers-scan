@@ -67,8 +67,13 @@ const pg = require('knex')({
 });
 
 // Middleware for attaching clamscan with the express request
-app.use(async (req, _, next) => {
-	req.clamscan = await new NodeClam().init({ ...config.clamscanConfig })
+app.use(async (req, res, next) => {
+	try {
+		req.clamscan = await new NodeClam().init({ ...config.clamscanConfig })
+	} catch (err) {
+		console.log(err);
+		return res.status(500).json({message: 'Could not connect to clamav for scanning' });
+	}
 	next()
 })
   
@@ -142,18 +147,18 @@ app.post('/virus-scan', async (req, res) => {
   	scanResult = await scanFile(req.files.energuide, req.clamscan);
   } catch (err) {
 	console.log(err);
-	return res.status(500).json({
-		message: "Scan failed due to internal server error"
-	})
+	return res.status(500).json({message: 'Clam av encountered an error while scanning'});
   }
   console.log(scanResult);
 
   if (scanResult.is_infected === true || scanFile.is_infected === null) {
     return res.status(502).json({
+	  filename: scanResult.filename ? scanResult.filename : null,
       clean: false
     })
   }
   return res.status(200).json({
+	filename: scanResult.filename ? scanResult.filename : null,
     clean: true
   });
 });

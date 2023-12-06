@@ -14,7 +14,7 @@ const clamscanConfig = {
 	  active: process.env.CLAMD_ACTIVE ? /^true$/i.test(process.env.CLAMD_ACTIVE) : true // If true, this module will consider using the clamscan binary
 	},
 	clamdscan: {
-	  socket: process.env.CLAMD_SOCKET ? process.env.CLAMD_SOCKET : '/tmp/clamd.sock', // Socket file for connecting via TCP
+	  socket: process.env.CLAMD_SOCKET && process.env.CLAMD_SOCKET != 'null'? process.env.CLAMD_SOCKET : null, // Socket file for connecting via TCP
 	  host: process.env.CLAMD_HOST ? process.env.CLAMD_HOST : '127.0.0.1', // IP of host to connect to TCP interface
 	  port: process.env.CLAMD_PORT ? parseInt(process.env.CLAMD_PORT) : 65615, // Port of host to use when connecting via TCP interface
 	  timeout: process.env.CLAMD_TIMEOUT ? parseInt(process.env.CLAMD_TIMEOUT) : 120000, // Timeout for scanning files

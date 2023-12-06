@@ -19,15 +19,21 @@ jobs:
       packages: write
     strategy:
       matrix:
-        package: [containers/clamav]
+        package: [vhers-virus-scan]
+        include:
+          - package: vhers-virus-scan
+            build_context: ./
+            triggers: ('vhers-virus-scan/')
+            build_file: Dockerfile
     timeout-minutes: 10
     steps:
       - uses: bcgov-nr/action-builder-ghcr@v2.0.0
         with:
           keep_versions: 50
           package: ${{ matrix.package }}
+          build_context: ${{ matrix.build_context }}
           tag: latest
-          triggers: ('${{ matrix.package }}/')
+          triggers: ${{ matrix.triggers }}
 
 
   deploys:
@@ -39,10 +45,11 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
+        name: [vhers-virus-scan]
         include:
-          - name: clamav
-            file: containers/clamav/openshift/templates/clamav-dc.yaml
-            overwrite: false
+          - name: vhers-virus-scan
+            file: ./openshift.deploy.yml
+            overwrite: true
 
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v2.0.0
@@ -52,6 +59,6 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
-          parameters: -p ZONE=prod -p NAME=${{ github.event.repository.name }}
+          parameters: -p ZONE=tools
           repository: ${{ matrix.repository }}
           verification_path: ${{ matrix.verification_path }}
