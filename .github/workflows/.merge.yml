@@ -22,6 +22,8 @@ jobs:
         package: [scan-backend]
         include:
           - package: scan-backend
+            build_context: ./
+            triggers: ('scan-backend/')
             build_file: Dockerfile
     timeout-minutes: 10
     steps:
