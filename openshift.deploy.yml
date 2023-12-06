@@ -10,6 +10,9 @@ parameters:
     description: Deployment zone, e.g. pr-### or prod
     value: tools
     required: true
+  - name: IMAGE_TAG
+    description: Image tag to use
+    value: latest
   - name: COMPONENT
     value: c82b4c-tools
     required: true
@@ -33,7 +36,7 @@ parameters:
     value: bcgov
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
-    value: bcgov/bc-emli-vhers-scan:latest
+    value: bcgov/vhers-virus-scan-tools/vhers-virus-scan:latest
 objects:
   - kind: ImageStream
     apiVersion: v1
@@ -59,10 +62,10 @@ objects:
         app: ${NAME}
     spec:
       ports:
-        - name: 3510-tcp
+        - name: 3500-tcp
           protocol: TCP
-          port: 3510
-          targetPort: 3510
+          port: 3500
+          targetPort: 3500
       selector:
         deploymentconfig: ${NAME}
       type: ClusterIP
@@ -114,7 +117,7 @@ objects:
                   memory: ${MEMORY_LIMIT}
               readinessProbe:
                 tcpSocket:
-                  port: 3510
+                  port: 3500
                 initialDelaySeconds: 240
                 timeoutSeconds: 3
                 periodSeconds: 10
@@ -124,17 +127,18 @@ objects:
               name: ${NAME}
               livenessProbe:
                 tcpSocket:
-                  port: 3510
+                  port: 3500
                 initialDelaySeconds: 240
                 timeoutSeconds: 3
                 periodSeconds: 10
                 successThreshold: 1
                 failureThreshold: 3
               ports:
-                - containerPort: 3510
+                - containerPort: 3500
                   protocol: TCP
               imagePullPolicy: Always
               terminationMessagePolicy: File
+              image: "${NAME}-${ZONE}:${IMAGE_TAG}"
           restartPolicy: Always
           terminationGracePeriodSeconds: 30
           dnsPolicy: ClusterFirst
