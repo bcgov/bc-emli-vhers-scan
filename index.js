@@ -8,6 +8,7 @@ const fileUpload = require('express-fileupload');
 const config = require('./config')
 const port = process.env.PORT && process.env.PORT !== '' ? parseInt(process.env.PORT) : 3500;
 
+// Middleware functions
 const startTime = (req, res, next) => {
     const startTime = process.hrtime();
     res.set(
@@ -47,7 +48,32 @@ const responseLogger = async function (
     next();
 }
 
+const apiKeyAuth = async (req, res, next) => {
+    const VHERS_API_KEY =
+        process.env.VHERS_API_KEY && process.env.VHERS_API_KEY !== ''
+            ? process.env.VHERS_API_KEY
+            : '';
+    
+        // Extract api key from the request header.
+        const apiKey = req.header('x-api-key');
+
+        // Check if api key exists
+        if (!apiKey) {
+			return res.status(401).json({
+				message: 'Access Denied'
+			});
+		}
+        if (apiKey === VHERS_API_KEY) {
+            next();
+        } else {
+			return res.status(400).json({
+				message: 'Invalid Token'
+			});
+		}
+}
+
 app.use(startTime);
+app.use(apiKeyAuth);
 app.use(express.json());
 app.use(cors());
 app.use(responseLogger)
