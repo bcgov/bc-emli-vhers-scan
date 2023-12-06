@@ -1,0 +1,159 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: vs-deploy
+parameters:
+  - name: NAME
+    description: Module name
+    value: vhers-virus-scan
+  - name: ZONE
+    description: Deployment zone, e.g. pr-### or prod
+    value: tools
+    required: true
+  - name: COMPONENT
+    value: c82b4c-tools
+    required: true
+  - name: DOMAIN
+    value: apps.silver.devops.gov.bc.ca
+  - name: CPU_REQUEST
+    value: "100m"
+  - name: CPU_LIMIT
+    value: "1100m"
+  - name: MEMORY_REQUEST
+    value: "500M"
+  - name: MEMORY_LIMIT
+    value: "2G"
+  - name: REPLICAS
+    value: "1"
+  - name: REGISTRY
+    description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
+    value: ghcr.io
+  - name: ORG_NAME
+    description: Organization name, e.g. bcgov
+    value: bcgov
+  - name: PROMOTE
+    description: Image (namespace/name:tag) to promote/import
+    value: bcgov/bc-emli-vhers-scan:latest
+objects:
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      labels:
+        app: "${NAME}-${ZONE}"
+      name: "${NAME}-${ZONE}"
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - name: "${IMAGE_TAG}"
+          from:
+            kind: DockerImage
+            name: "${REGISTRY}/${PROMOTE}"
+          referencePolicy:
+            type: Local
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: "${NAME}-${ZONE}-${COMPONENT}"
+      labels:
+        app: ${NAME}
+    spec:
+      ports:
+        - name: 3510-tcp
+          protocol: TCP
+          port: 3510
+          targetPort: 3510
+      selector:
+        deploymentconfig: ${NAME}
+      type: ClusterIP
+      sessionAffinity: None
+    status:
+      loadBalancer: {}
+  - kind: DeploymentConfig
+    apiVersion: apps.openshift.io/v1
+    metadata:
+      name: ${NAME}
+      generation: 1
+      labels:
+        app: ${NAME}
+    spec:
+      strategy:
+        type: Rolling
+        activeDeadlineSeconds: 21600
+      triggers:
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${NAME}
+            from:
+              from:
+              kind: ImageStreamTag
+              name: "${NAME}-${ZONE}:${IMAGE_TAG}"
+        - type: ConfigChange
+      replicas: ${{REPLICAS}}
+      test: false
+      selector:
+        app: ${NAME}
+        deploymentconfig: ${NAME}
+      template:
+        metadata:
+          labels:
+            app: ${NAME}
+            deploymentconfig: ${NAME}
+          annotations:
+            openshift.io/generated-by: OpenShiftWebConsole
+        spec:
+          containers:
+            - resources:
+                requests:
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+              readinessProbe:
+                tcpSocket:
+                  port: 3510
+                initialDelaySeconds: 240
+                timeoutSeconds: 3
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              terminationMessagePath: /dev/termination-log
+              name: ${NAME}
+              livenessProbe:
+                tcpSocket:
+                  port: 3510
+                initialDelaySeconds: 240
+                timeoutSeconds: 3
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              ports:
+                - containerPort: 3510
+                  protocol: TCP
+              imagePullPolicy: Always
+              terminationMessagePolicy: File
+          restartPolicy: Always
+          terminationGracePeriodSeconds: 30
+          dnsPolicy: ClusterFirst
+          securityContext: {}
+          schedulerName: default-scheduler
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      labels:
+        app: "${NAME}-${ZONE}"
+      name: "${NAME}-${ZONE}-${COMPONENT}"
+    spec:
+      host: "${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}"
+      port:
+        targetPort: 3510-tcp
+      to:
+        kind: Service
+        name: "${NAME}-${ZONE}-${COMPONENT}"
+        weight: 100
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
