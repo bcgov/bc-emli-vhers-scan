@@ -48,32 +48,7 @@ const responseLogger = async function (
     next();
 }
 
-const apiKeyAuth = async (req, res, next) => {
-    const VHERS_API_KEY =
-        process.env.VHERS_API_KEY && process.env.VHERS_API_KEY !== ''
-            ? process.env.VHERS_API_KEY
-            : '';
-    
-        // Extract api key from the request header.
-        const apiKey = req.header('x-api-key');
-
-        // Check if api key exists
-        if (!apiKey) {
-			return res.status(401).json({
-				message: 'Access Denied'
-			});
-		}
-        if (apiKey === VHERS_API_KEY) {
-            next();
-        } else {
-			return res.status(400).json({
-				message: 'Invalid Token'
-			});
-		}
-}
-
 app.use(startTime);
-app.use(apiKeyAuth);
 app.use(express.json());
 app.use(cors());
 app.use(responseLogger)
@@ -134,6 +109,28 @@ const scanFile = async (file, clamscan) => {
 }
 
 app.post('/virus-scan', async (req, res) => {
+	// Auth
+	const VHERS_API_KEY =
+        process.env.VHERS_API_KEY && process.env.VHERS_API_KEY !== ''
+            ? process.env.VHERS_API_KEY
+            : '';
+    
+	// Extract api key from the request header.
+	const apiKey = req.header('x-api-key');
+
+	// Check if api key exists
+	if (!apiKey) {
+		return res.status(401).json({
+			message: 'Access Denied'
+		});
+	}
+	if (apiKey !== VHERS_API_KEY) {
+		return res.status(400).json({
+			message: 'Invalid Token'
+		});
+	}
+
+	// Check for files
 	if (!req.files || ! req.files.energuide) {
 		return res.status(409).json({
 			message: 'No energuide file provided for scan'
