@@ -19,11 +19,14 @@ jobs:
       packages: write
     strategy:
       matrix:
-        package: [clamav]
+        package: [clamav, scan-backend]
         include:
           - package: clamav
             triggers: ('containers/clamav')
             build_context: ./containers/clamav
+          - package: scan-backend
+            triggers: ('/')
+            build_context: /
     timeout-minutes: 10
     steps:
       - uses: bcgov-nr/action-builder-ghcr@v2.0.0
@@ -44,10 +47,13 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [clamav]
+        name: [clamav, scan-backend]
         include:
           - name: clamav
             file: containers/clamav/openshift/templates/clamav-dc.yaml
+            overwrite: true
+          - name: scan-backend
+            file: openshift.deploy.yaml
             overwrite: true
 
     steps:
