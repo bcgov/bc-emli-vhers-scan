@@ -48,7 +48,7 @@ jobs:
         name: [vhers-virus-scan]
         include:
           - name: vhers-virus-scan
-            file: ./openshift.deploy.yaml
+            file: ./openshift.deploy.yml
             overwrite: true
 
     steps:
