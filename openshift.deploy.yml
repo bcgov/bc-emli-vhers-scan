@@ -136,6 +136,32 @@ objects:
                 periodSeconds: 10
                 successThreshold: 1
                 failureThreshold: 3
+              env:
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: db-hostname-dev
+                - name: DB_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: db-port-dev
+                - name: DB_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: db-name-dev
+                - name: DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: app-db-username-dev
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: app-db-password-dev
               ports:
                 - containerPort: 3500
                   protocol: TCP
