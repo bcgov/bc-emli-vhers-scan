@@ -59,6 +59,6 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
-          parameters: -p ZONE=prod -p PROMOTE=${{ github.repository }}/clamav:dev
+          parameters: -p ZONE=tools -p
           repository: ${{ matrix.repository }}
           verification_path: ${{ matrix.verification_path }}
