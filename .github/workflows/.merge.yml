@@ -32,7 +32,7 @@ jobs:
           keep_versions: 50
           package: ${{ matrix.package }}
           build_context: ${{ matrix.build_context }}
-          tag: dev
+          tag: latest
           triggers: ${{ matrix.triggers }}
 
 
