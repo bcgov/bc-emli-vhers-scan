@@ -11,19 +11,44 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # https://github.com/bcgov-nr/action-builder-ghcr
+  builds:
+    name: Builds
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        package: [clamav]
+        include:
+          - package: clamav
+            triggers: ('containers/clamav')
+            build_context: ./containers/clamav
+    timeout-minutes: 10
+    steps:
+      - uses: bcgov-nr/action-builder-ghcr@v2.0.0
+        with:
+          keep_versions: 50
+          package: ${{ matrix.package }}
+          build_context: ${{ matrix.build_context }}
+          tag: dev
+          triggers: ${{ matrix.triggers }}
+
+
   deploys:
     name: Deploys Anitvirus
+    needs: [builds]
     environment: tools
     permissions:
       issues: write
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [containers/clamav]
+        name: [clamav]
         include:
           - name: clamav
             file: containers/clamav/openshift/templates/clamav-dc.yaml
-            overwrite: false
+            overwrite: true
 
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v2.0.0
@@ -33,7 +58,6 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
-          parameters:
-            -p ZONE=prod -p NAME=${{ github.event.repository.name }}
+          parameters: -p ZONE=prod -p PROMOTE=${{ github.repository }}/clamav:dev
           repository: ${{ matrix.repository }}
           verification_path: ${{ matrix.verification_path }}
