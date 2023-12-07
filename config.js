@@ -7,12 +7,12 @@ const clamscanConfig = {
 	debugMode: process.env.CLAM_DEBUG_MODE ? /^true$/i.test(process.env.CLAM_DEBUG_MODE) : true, // Whether or not to log info/debug/error msgs to the console
 	fileList: null, // path to file containing list of files to scan (for scanFiles method)
 	scanRecursively: true, // If true, deep scan folders recursively
-	clamscan: {
-	  path: process.env.CLAMD_PATH ? process.env.CLAMD_PATH :'/opt/homebrew/bin/clamscan', // Path to clamscan binary on your server
-	  db: null, // Path to a custom virus definition database
-	  scanArchives: true, // If true, scan archives (ex. zip, rar, tar, dmg, iso, etc...)
-	  active: process.env.CLAMD_ACTIVE ? /^true$/i.test(process.env.CLAMD_ACTIVE) : true // If true, this module will consider using the clamscan binary
-	},
+	// clamscan: {
+	//   path: process.env.CLAMD_PATH ? process.env.CLAMD_PATH :'/opt/homebrew/bin/clamscan', // Path to clamscan binary on your server
+	//   db: null, // Path to a custom virus definition database
+	//   scanArchives: true, // If true, scan archives (ex. zip, rar, tar, dmg, iso, etc...)
+	//   active: process.env.CLAMD_ACTIVE ? /^true$/i.test(process.env.CLAMD_ACTIVE) : true // If true, this module will consider using the clamscan binary
+	// },
 	clamdscan: {
 	  socket: process.env.CLAMD_SOCKET && process.env.CLAMD_SOCKET != 'null'? process.env.CLAMD_SOCKET : null, // Socket file for connecting via TCP
 	  host: process.env.CLAMD_HOST ? process.env.CLAMD_HOST : '127.0.0.1', // IP of host to connect to TCP interface
@@ -26,7 +26,7 @@ const clamscanConfig = {
 	  active: process.env.CLAMD_ACTIVE ? /^true$/i.test(process.env.CLAMD_ACTIVE) : true, // If true, this module will consider using the clamdscan binary
 	  bypassRest: process.env.CLAMD_BYPASS_REST ? /^true$/i.test(process.env.CLAMD_BYPASS_REST) : false, // Check to see if socket is available when applicable
 	},
-	preference: process.env.CLAM_PREFERENCE ? process.env.CLAM_PREFERENCE :'clamdscan' // If clamdscan is found and active, it will be used by default
+	// preference: process.env.CLAM_PREFERENCE ? process.env.CLAM_PREFERENCE :'clamdscan' // If clamdscan is found and active, it will be used by default
   }
   
   const fileUploadConfig = {
