@@ -14,12 +14,12 @@ const clamscanConfig = {
 	//   active: process.env.CLAMD_ACTIVE ? /^true$/i.test(process.env.CLAMD_ACTIVE) : true // If true, this module will consider using the clamscan binary
 	// },
 	clamdscan: {
-	  // socket: process.env.CLAMD_SOCKET && process.env.CLAMD_SOCKET != 'null'? process.env.CLAMD_SOCKET : null, // Socket file for connecting via TCP
+	  socket: process.env.CLAMD_SOCKET && process.env.CLAMD_SOCKET != 'null'? process.env.CLAMD_SOCKET : null, // Socket file for connecting via TCP
 	  host: process.env.CLAMD_HOST ? process.env.CLAMD_HOST : '127.0.0.1', // IP of host to connect to TCP interface
 	  port: process.env.CLAMD_PORT ? parseInt(process.env.CLAMD_PORT) : 65615, // Port of host to use when connecting via TCP interface
 	  timeout: process.env.CLAMD_TIMEOUT ? parseInt(process.env.CLAMD_TIMEOUT) : 120000, // Timeout for scanning files
 	  localFallback: false, // Do no fail over to binary-method of scanning
-	  // path: process.env.CLAMD_PATH ? process.env.CLAMD_PATH : '/opt/homebrew/bin/clamscan', // Path to the clamdscan binary on your server
+	  path: process.env.CLAMD_PATH ? process.env.CLAMD_PATH : '/opt/homebrew/bin/clamscan', // Path to the clamdscan binary on your server
 	  // configFile: process.env.CLAMD_CONFIG_FILE && process.env.CLAMD_CONFIG_FILE != 'null' ? process.env.CLAMD_CONFIG_FILE : null, // Specify config file if it's in an unusual place
 	  multiscan: process.env.CLAMD_MULTI_SCAN ? /^true$/i.test(process.env.CLAMD_MULTI_SCAN) : false, // Scan using all available cores! Yay!
 	  reloadDb: false, // If true, will re-load the DB on every call (slow)
