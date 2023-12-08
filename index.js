@@ -5,16 +5,18 @@ require('dotenv').config();
 const app = express();
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
-const config = require('./config')
+const config = require('./config');
 const port = process.env.PORT && process.env.PORT !== '' ? parseInt(process.env.PORT) : 3500;
 
 // Middleware functions
 const startTime = (req, res, next) => {
     const startTime = process.hrtime();
-    res.set(
-        'X-Start-Time',
-        startTime[0].toString() + ',' + startTime[1].toString(),
-    );
+	if (!res.headersSent) {
+		res.set(
+			'X-Start-Time',
+			startTime[0].toString() + ',' + startTime[1].toString(),
+		); 
+	}
     next();
 }
 
@@ -26,24 +28,34 @@ const responseLogger = async function (
     const originalSendFunc = res.send.bind(res);
     res.send = function (body) {
         const startTimeString = res.get('X-Start-Time')?.split(',');
-        const startTime = [
-            Number(startTimeString[0]),
-            Number(startTimeString[1]),
-        ];
-        const diff = process.hrtime(startTime);
-        const time = diff[0] * 1e3 + diff[1] * 1e-6;
-        if (res.get('X-Start-Time')) {
+		let time;
+		if (startTimeString) {
+			const startTime = [
+				Number(startTimeString[0]),
+				Number(startTimeString[1]),
+			];
+			const diff = process.hrtime(startTime);
+			time = diff[0] * 1e3 + diff[1] * 1e-6;
+		} else {
+			/* In the case of 413 errors, we can't get an accurate time due to the 
+			limit handler occuring in a library function, so set to 0 */
+			time = 0; 
+		}
+        if (res.get('X-Start-Time') && !res.headersSent) {
             res.removeHeader('X-Start-Time');
         }
 		let reqBody = {}
-		if (req.files && req.files.energuide && req.files.energuide.name) reqBody =  {filename: req.files.energuide.name};
+		if (req.files && req.files.energuide && req.files.energuide.name) reqBody =  { filename: req.files.energuide.name }
+		else reqBody = { filename: 'Not processed' };
 		createAuditLog(
 			res.statusCode,
 			Number(time.toFixed(3)),
 			reqBody,
 			body,
 		).then(() => {});
-        return originalSendFunc(body);
+		if (!res.headersSent) {
+        	return originalSendFunc(body);
+		}
     };
     next();
 }

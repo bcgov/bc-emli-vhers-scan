@@ -35,20 +35,9 @@ const clamscanConfig = {
 	  fileSize: process.env.FILE_SIZE_LIMIT ? parseInt(process.env.FILE_SIZE_LIMIT) : 10 * 1024 * 1024, // 10 MB
 	},
 	limitHandler: (req, res) => {
-	  res.writeHead(413, {
-		Connection: 'close',
-		'Content-Type': 'application/json',
-	  })
-	  res.end(
-		JSON.stringify({
-		  success: false,
-		  data: {
-			error: `File size limit exceeded. Max size of uploaded file is: ${
-				proccess.env.FILE_SIZE_LIMIT ? parseInt(proccess.env.FILE_SIZE_LIMIT) / 1024: 10 * 1024
-			} KB`,
-		  },
-		})
-	  )
+		return res.status(413).json({
+			message: `File size limit exceeded. Max size of uploaded file is: ${process.env.FILE_SIZE_LIMIT ? parseInt(process.env.FILE_SIZE_LIMIT) / (1024 * 1024): 10} MB`
+		});
 	},
   }
   
