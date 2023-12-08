@@ -58,9 +58,9 @@ app.post('/virus-scan', async (req, res) => {
   console.log(scanResult);
 
   if (scanResult.is_infected === true || scanFile.is_infected === null) {
-    return res.status(502).json({
+    return res.status(200).json({
       clean: false
-    })
+    });
   }
   return res.status(200).json({
     clean: true
