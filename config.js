@@ -24,7 +24,7 @@ const clamscanConfig = {
 	  multiscan: process.env.CLAMD_MULTI_SCAN ? /^true$/i.test(process.env.CLAMD_MULTI_SCAN) : false, // Scan using all available cores! Yay!
 	  reloadDb: false, // If true, will re-load the DB on every call (slow)
 	  active: process.env.CLAMD_ACTIVE ? /^true$/i.test(process.env.CLAMD_ACTIVE) : true, // If true, this module will consider using the clamdscan binary
-	  bypassRest: process.env.CLAMD_BYPASS_REST ? /^true$/i.test(process.env.CLAMD_BYPASS_REST) : false, // Check to see if socket is available when applicable
+	  bypassTest: process.env.CLAMD_BYPASS_TEST ? /^true$/i.test(process.env.CLAMD_BYPASS_TEST) : false, // Check to see if socket is available when applicable
 	},
 	// preference: process.env.CLAM_PREFERENCE ? process.env.CLAM_PREFERENCE :'clamdscan' // If clamdscan is found and active, it will be used by default
   }
