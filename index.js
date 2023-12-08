@@ -43,7 +43,7 @@ const scanFile = async (file, clamscan) => {
 
 app.post('/virus-scan', async (req, res) => {
 	if (!req.files || ! req.files.energuide) {
-		return res.status(409).json({
+		return res.status(400).json({
 			message: 'No energuide file provided for scan'
 		})
 	}
