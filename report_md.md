@@ -17,7 +17,7 @@
 
 | Name | Risk Level | Number of Instances |
 | --- | --- | --- |
-| CSP: Wildcard Directive | Medium | 1 |
+| CSP: Wildcard Directive | Medium | 3 |
 | Cross-Domain Misconfiguration | Medium | 3 |
 | Cookie with SameSite Attribute None | Low | 1 |
 | Permissions Policy Header Not Set | Low | 3 |
@@ -48,6 +48,24 @@
 
 Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks. Including (but not limited to) Cross Site Scripting (XSS), and data injection attacks. These attacks are used for everything from data theft to site defacement or distribution of malware. CSP provides a set of standard HTTP headers that allow website owners to declare approved sources of content that browsers should be allowed to load on that page — covered types are JavaScript, CSS, HTML frames, fonts, images and embeddable objects such as Java applets, ActiveX, audio and video files.
 
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/
+  * Method: `GET`
+  * Parameter: `content-security-policy`
+  * Attack: ``
+  * Evidence: `default-src 'none'`
+  * Other Info: `The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: 
+frame-ancestors, form-action
+
+The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: `content-security-policy`
+  * Attack: ``
+  * Evidence: `default-src 'none'`
+  * Other Info: `The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: 
+frame-ancestors, form-action
+
+The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
 * URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
   * Method: `GET`
   * Parameter: `content-security-policy`
@@ -58,7 +76,7 @@ frame-ancestors, form-action
 
 The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
 
-Instances: 1
+Instances: 3
 
 ### Solution
 
@@ -67,11 +85,10 @@ Ensure that your web server, application server, load balancer, etc. is properly
 ### Reference
 
 
-* [ http://www.w3.org/TR/CSP2/ ](http://www.w3.org/TR/CSP2/)
-* [ http://www.w3.org/TR/CSP/ ](http://www.w3.org/TR/CSP/)
-* [ http://caniuse.com/#search=content+security+policy ](http://caniuse.com/#search=content+security+policy)
-* [ http://content-security-policy.com/ ](http://content-security-policy.com/)
-* [ https://github.com/shapesecurity/salvation ](https://github.com/shapesecurity/salvation)
+* [ https://www.w3.org/TR/CSP/ ](https://www.w3.org/TR/CSP/)
+* [ https://caniuse.com/#search=content+security+policy ](https://caniuse.com/#search=content+security+policy)
+* [ https://content-security-policy.com/ ](https://content-security-policy.com/)
+* [ https://github.com/HtmlUnit/htmlunit-csp ](https://github.com/HtmlUnit/htmlunit-csp)
 * [ https://developers.google.com/web/fundamentals/security/csp#policy_applies_to_a_wide_variety_of_resources ](https://developers.google.com/web/fundamentals/security/csp#policy_applies_to_a_wide_variety_of_resources)
 
 
@@ -257,8 +274,8 @@ Ensure that your web server, application server, load balancer, etc. is configur
 ### Reference
 
 
-* [ http://blogs.msdn.com/b/varunm/archive/2013/04/23/remove-unwanted-http-response-headers.aspx ](http://blogs.msdn.com/b/varunm/archive/2013/04/23/remove-unwanted-http-response-headers.aspx)
-* [ http://www.troyhunt.com/2012/02/shhh-dont-let-your-response-headers.html ](http://www.troyhunt.com/2012/02/shhh-dont-let-your-response-headers.html)
+* [ https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework ](https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework)
+* [ https://www.troyhunt.com/2012/02/shhh-dont-let-your-response-headers.html ](https://www.troyhunt.com/2012/02/shhh-dont-let-your-response-headers.html)
 
 
 #### CWE Id: [ 200 ](https://cwe.mitre.org/data/definitions/200.html)
@@ -308,9 +325,9 @@ Ensure that your web server, application server, load balancer, etc. is configur
 
 * [ https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html ](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html)
 * [ https://owasp.org/www-community/Security_Headers ](https://owasp.org/www-community/Security_Headers)
-* [ http://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security ](http://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security)
-* [ http://caniuse.com/stricttransportsecurity ](http://caniuse.com/stricttransportsecurity)
-* [ http://tools.ietf.org/html/rfc6797 ](http://tools.ietf.org/html/rfc6797)
+* [ https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security ](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security)
+* [ https://caniuse.com/stricttransportsecurity ](https://caniuse.com/stricttransportsecurity)
+* [ https://datatracker.ietf.org/doc/html/rfc6797 ](https://datatracker.ietf.org/doc/html/rfc6797)
 
 
 #### CWE Id: [ 319 ](https://cwe.mitre.org/data/definitions/319.html)
