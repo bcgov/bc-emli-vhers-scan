@@ -1,7 +1,7 @@
 {
 	"@programName": "ZAP",
 	"@version": "2.14.0",
-	"@generated": "Thu, 1 Feb 2024 23:32:55",
+	"@generated": "Thu, 1 Feb 2024 23:39:43",
 	"site":[ 
 		{
 			"@name": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca",
@@ -34,15 +34,23 @@
 							"attack": "",
 							"evidence": "default-src 'none'",
 							"otherinfo": "The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: \nframe-ancestors, form-action\n\nThe directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything."
+						},
+						{
+							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml",
+							"method": "GET",
+							"param": "content-security-policy",
+							"attack": "",
+							"evidence": "default-src 'none'",
+							"otherinfo": "The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: \nframe-ancestors, form-action\n\nThe directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything."
 						}
 					],
-					"count": "2",
+					"count": "3",
 					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is properly configured to set the Content-Security-Policy header.</p>",
 					"otherinfo": "<p>The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: </p><p>frame-ancestors, form-action</p><p></p><p>The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.</p>",
 					"reference": "<p>https://www.w3.org/TR/CSP/</p><p>https://caniuse.com/#search=content+security+policy</p><p>https://content-security-policy.com/</p><p>https://github.com/HtmlUnit/htmlunit-csp</p><p>https://developers.google.com/web/fundamentals/security/csp#policy_applies_to_a_wide_variety_of_resources</p>",
 					"cweid": "693",
 					"wascid": "15",
-					"sourceid": "6"
+					"sourceid": "1"
 				},
 				{
 					"pluginid": "10098",
@@ -198,7 +206,7 @@
 					"reference": "<p>https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework</p><p>https://www.troyhunt.com/2012/02/shhh-dont-let-your-response-headers.html</p>",
 					"cweid": "200",
 					"wascid": "13",
-					"sourceid": "6"
+					"sourceid": "1"
 				},
 				{
 					"pluginid": "10035",
@@ -289,14 +297,6 @@
 							"otherinfo": ""
 						},
 						{
-							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt",
-							"method": "GET",
-							"param": "Sec-Fetch-Dest",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
 							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml",
 							"method": "GET",
 							"param": "Sec-Fetch-Dest",
@@ -305,13 +305,13 @@
 							"otherinfo": ""
 						}
 					],
-					"count": "3",
+					"count": "2",
 					"solution": "<p>Ensure that Sec-Fetch-Dest header is included in request headers.</p>",
 					"otherinfo": "",
 					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Dest</p>",
 					"cweid": "352",
 					"wascid": "9",
-					"sourceid": "6"
+					"sourceid": "1"
 				},
 				{
 					"pluginid": "90005",
@@ -332,14 +332,6 @@
 							"otherinfo": ""
 						},
 						{
-							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt",
-							"method": "GET",
-							"param": "Sec-Fetch-Mode",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
 							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml",
 							"method": "GET",
 							"param": "Sec-Fetch-Mode",
@@ -348,13 +340,13 @@
 							"otherinfo": ""
 						}
 					],
-					"count": "3",
+					"count": "2",
 					"solution": "<p>Ensure that Sec-Fetch-Mode header is included in request headers.</p>",
 					"otherinfo": "",
 					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Mode</p>",
 					"cweid": "352",
 					"wascid": "9",
-					"sourceid": "6"
+					"sourceid": "1"
 				},
 				{
 					"pluginid": "90005",
@@ -375,14 +367,6 @@
 							"otherinfo": ""
 						},
 						{
-							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt",
-							"method": "GET",
-							"param": "Sec-Fetch-Site",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
 							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml",
 							"method": "GET",
 							"param": "Sec-Fetch-Site",
@@ -391,7 +375,7 @@
 							"otherinfo": ""
 						}
 					],
-					"count": "3",
+					"count": "2",
 					"solution": "<p>Ensure that Sec-Fetch-Site header is included in request headers.</p>",
 					"otherinfo": "",
 					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Site</p>",
@@ -418,14 +402,6 @@
 							"otherinfo": ""
 						},
 						{
-							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt",
-							"method": "GET",
-							"param": "Sec-Fetch-User",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
 							"uri": "https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml",
 							"method": "GET",
 							"param": "Sec-Fetch-User",
@@ -434,13 +410,13 @@
 							"otherinfo": ""
 						}
 					],
-					"count": "3",
+					"count": "2",
 					"solution": "<p>Ensure that Sec-Fetch-User header is included in user initiated requests.</p>",
 					"otherinfo": "",
 					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-User</p>",
 					"cweid": "352",
 					"wascid": "9",
-					"sourceid": "6"
+					"sourceid": "1"
 				},
 				{
 					"pluginid": "10112",
@@ -510,7 +486,7 @@
 					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
 					"cweid": "524",
 					"wascid": "13",
-					"sourceid": "7"
+					"sourceid": "8"
 				}
 			]
 		}
