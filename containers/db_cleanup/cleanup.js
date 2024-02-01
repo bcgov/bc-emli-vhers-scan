@@ -27,6 +27,7 @@ const retainUntil = now.subtract(retentionIntervalMonths, 'month');
 const fileTimeString = `${now.toDate()}-${now.hour().toPrecision(2)}:${now.minute().toPrecision(2)}:${now.second().toPrecision(2)}`;
 const retainUntilString = retainUntil.format('YYYY-MM-DD HH:mm:ss.SSS ZZ');
 
+// change to force deploy
 // COPY logs that are about to be deleted to csv
 // \\g /deleted/vhers-audit-log.csv
 // TODO: Automate storing them elsewhere?
