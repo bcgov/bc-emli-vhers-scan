@@ -93,13 +93,11 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [vhers-virus-scan]
+        name: [vhers-virus-scan, db-cleanup]
         include:
           - name: vhers-virus-scan
             file: ./openshift.deploy.yml
             overwrite: true
-        name: [db-cleanup]
-        include:
           - name: db-cleanup
             file: ./containers/db_cleanup/openshift/templates/db-cleanup-dc.yaml
             overwrite: true
