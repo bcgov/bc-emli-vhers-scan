@@ -85,7 +85,7 @@ objects:
                   claimName: db-deletion-dump
               containers:
               - name: db-cleanup-container
-                image: "${NAME}-${ZONE}:${IMAGE_TAG}"
+                image: "image-registry.openshift-image-registry.svc:5000/c82b4c-tools/db-cleanup-tools"
                 imagePullPolicy: Always
                 env:  # Use environment variables for Secret values
                 - name: DB_NAME
