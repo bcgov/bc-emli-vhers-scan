@@ -21,7 +21,7 @@ const pg = require('knex')({
 	pool: {min: 0, max: parseInt(process.env.DB_MAX_POOL)}
 });
 
-const retentionIntervalMonths = /* Math.abs(parseInt(process.env.RENTENTION_MONTHS)) */ 7;
+const retentionIntervalMonths = Math.abs(parseInt(process.env.RENTENTION_MONTHS));
 const now = dayjs();
 const retainUntil = now.subtract(retentionIntervalMonths, 'month');
 const fileTimeString = `${now.toDate()}-${now.hour().toPrecision(2)}:${now.minute().toPrecision(2)}:${now.second().toPrecision(2)}`;
