@@ -8,7 +8,7 @@
 | High | 0 |
 | Medium | 2 |
 | Low | 4 |
-| Informational | 6 |
+| Informational | 7 |
 
 
 
@@ -19,16 +19,17 @@
 | --- | --- | --- |
 | CSP: Wildcard Directive | Medium | 3 |
 | Cross-Domain Misconfiguration | Medium | 3 |
-| Cookie with SameSite Attribute None | Low | 3 |
+| Cookie with SameSite Attribute None | Low | 2 |
 | Permissions Policy Header Not Set | Low | 3 |
 | Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s) | Low | 3 |
 | Strict-Transport-Security Header Not Set | Low | 3 |
-| Non-Storable Content | Informational | 3 |
-| Sec-Fetch-Dest Header is Missing | Informational | 2 |
-| Sec-Fetch-Mode Header is Missing | Informational | 2 |
-| Sec-Fetch-Site Header is Missing | Informational | 2 |
-| Sec-Fetch-User Header is Missing | Informational | 2 |
-| Session Management Response Identified | Informational | 3 |
+| Non-Storable Content | Informational | 2 |
+| Sec-Fetch-Dest Header is Missing | Informational | 3 |
+| Sec-Fetch-Mode Header is Missing | Informational | 3 |
+| Sec-Fetch-Site Header is Missing | Informational | 3 |
+| Sec-Fetch-User Header is Missing | Informational | 3 |
+| Session Management Response Identified | Informational | 2 |
+| Storable and Cacheable Content | Informational | 2 |
 
 
 
@@ -169,14 +170,8 @@ A cookie has been set with its SameSite attribute set to "none", which means tha
   * Attack: ``
   * Evidence: `set-cookie: b364a319754fe5d39a69505b59cbe7d8`
   * Other Info: ``
-* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
-  * Method: `GET`
-  * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
-  * Attack: ``
-  * Evidence: `set-cookie: b364a319754fe5d39a69505b59cbe7d8`
-  * Other Info: ``
 
-Instances: 3
+Instances: 2
 
 ### Solution
 
@@ -370,14 +365,8 @@ The response contents are not storable by caching components such as proxy serve
   * Attack: ``
   * Evidence: `private`
   * Other Info: ``
-* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
-  * Method: `GET`
-  * Parameter: ``
-  * Attack: ``
-  * Evidence: `private`
-  * Other Info: ``
 
-Instances: 3
+Instances: 2
 
 ### Solution
 
@@ -431,8 +420,14 @@ Specifies how and where the data would be used. For instance, if the value is au
   * Attack: ``
   * Evidence: ``
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
+  * Method: `GET`
+  * Parameter: `Sec-Fetch-Dest`
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: ``
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -473,8 +468,14 @@ Allows to differentiate between requests for navigating between HTML pages and r
   * Attack: ``
   * Evidence: ``
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
+  * Method: `GET`
+  * Parameter: `Sec-Fetch-Mode`
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: ``
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -515,8 +516,14 @@ Specifies the relationship between request initiator's origin and target's origi
   * Attack: ``
   * Evidence: ``
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
+  * Method: `GET`
+  * Parameter: `Sec-Fetch-Site`
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: ``
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -557,8 +564,14 @@ Specifies if a navigation request was initiated by a user.
   * Attack: ``
   * Evidence: ``
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
+  * Method: `GET`
+  * Parameter: `Sec-Fetch-User`
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: ``
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -601,15 +614,8 @@ cookie:b364a319754fe5d39a69505b59cbe7d8`
   * Evidence: `0b338650e95df8cab2271e52067374d5`
   * Other Info: `
 cookie:b364a319754fe5d39a69505b59cbe7d8`
-* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
-  * Method: `GET`
-  * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
-  * Attack: ``
-  * Evidence: `0b338650e95df8cab2271e52067374d5`
-  * Other Info: `
-cookie:b364a319754fe5d39a69505b59cbe7d8`
 
-Instances: 3
+Instances: 2
 
 ### Solution
 
@@ -621,6 +627,54 @@ This is an informational alert rather than a vulnerability and so there is nothi
 * [ https://www.zaproxy.org/docs/desktop/addons/authentication-helper/session-mgmt-id ](https://www.zaproxy.org/docs/desktop/addons/authentication-helper/session-mgmt-id)
 
 
+
+#### Source ID: 3
+
+### [ Storable and Cacheable Content ](https://www.zaproxy.org/docs/alerts/10049/)
+
+
+
+##### Informational (Medium)
+
+### Description
+
+The response contents are storable by caching components such as proxy servers, and may be retrieved directly from the cache, rather than from the origin server by the caching servers, in response to similar requests from other users.  If the response data is sensitive, personal or user-specific, this may result in sensitive information being leaked. In some cases, this may even result in a user gaining complete control of the session of another user, depending on the configuration of the caching components in use in their environment. This is primarily an issue where "shared" caching servers such as "proxy" caches are configured on the local network. This configuration is typically found in corporate or educational environments, for instance.
+
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/
+  * Method: `GET`
+  * Parameter: ``
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: `In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234.`
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
+  * Method: `GET`
+  * Parameter: ``
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: `In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234.`
+
+Instances: 2
+
+### Solution
+
+Validate that the response does not contain sensitive, personal or user-specific information.  If it does, consider the use of the following HTTP response headers, to limit, or prevent the content being stored and retrieved from the cache by another user:
+Cache-Control: no-cache, no-store, must-revalidate, private
+Pragma: no-cache
+Expires: 0
+This configuration directs both HTTP 1.0 and HTTP 1.1 compliant caching servers to not store the response, and to not retrieve the response (without validation) from the cache, in response to a similar request. 
+
+### Reference
+
+
+* [ https://datatracker.ietf.org/doc/html/rfc7234 ](https://datatracker.ietf.org/doc/html/rfc7234)
+* [ https://datatracker.ietf.org/doc/html/rfc7231 ](https://datatracker.ietf.org/doc/html/rfc7231)
+* [ https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html ](https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html)
+
+
+#### CWE Id: [ 524 ](https://cwe.mitre.org/data/definitions/524.html)
+
+
+#### WASC Id: 13
 
 #### Source ID: 3
 
