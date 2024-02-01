@@ -1,0 +1,133 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: db-cleanup-deploy
+parameters:
+  - name: NAME
+    description: Module name
+    value: db-cleanup
+  - name: ZONE
+    description: Deployment zone, e.g. pr-### or prod
+    value: tools
+    required: true
+  - name: IMAGE_TAG
+    description: Image tag to use
+    value: dev
+  - name: NAME_SPACE
+    value: c82b4c-tools
+    required: true
+  - name: DOMAIN
+    value: apps.silver.devops.gov.bc.ca
+  - name: CPU_REQUEST
+    value: "100m"
+  - name: CPU_LIMIT
+    value: "300m"
+  - name: MEMORY_REQUEST
+    value: "150Mi"
+  - name: MEMORY_LIMIT
+    value: "350Mi"
+  - name: REGISTRY
+    description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
+    value: ghcr.io
+  - name: ORG_NAME
+    description: Organization name, e.g. bcgov
+    value: bcgov
+  - name: PROMOTE
+    description: Image (namespace/name:tag) to promote/import
+    value: bcgov/bc-emli-vhers-scan/db-cleanup:latest
+objects:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: "${NAME}-${ZONE}"
+      name: "${NAME}-${ZONE}"
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - name: "${IMAGE_TAG}"
+          from:
+            kind: DockerImage
+            name: "${REGISTRY}/${PROMOTE}"
+          referencePolicy:
+            type: Local
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: db-deletion-dump
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 500M
+
+  - apiVersion: batch/v1
+    kind: CronJob
+    metadata:
+      name: db-cleanup-cronjob
+    spec:
+      schedule: "30 2 * * SUN"
+      startingDeadlineSeconds: 3600
+      concurrencyPolicy: Forbid
+      successfulJobsHistoryLimit: 3
+      failedJobsHistoryLimit: 3
+      jobTemplate:
+        spec:
+          template:
+            spec:
+              volumes:
+              - name: output
+                persistentVolumeClaim:
+                  claimName: db-deletion-dump
+              containers:
+              - name: db-cleanup-container
+                image: "${NAME}-${ZONE}:${IMAGE_TAG}"
+                imagePullPolicy: Always
+                env:  # Use environment variables for Secret values
+                - name: DB_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: app-db-name
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: app-db-hostname
+                - name: DB_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: app-db-port
+                - name: DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: superuser-username
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: patroni-ha-postgres-instance
+                      key: superuser-password
+                - name: RENTENTION_MONTHS
+                  valueFrom:
+                    secretKeyRef:
+                      name: db-cleanup
+                      key: RENTENTION_MONTHS
+                command:  # Command-line arguments
+                - node
+                - cleanup.js
+                resources:
+                  limits:
+                    memory: "${MEMORY_LIMIT}"
+                    cpu: "${CPU_LIMIT}"
+                  requests:
+                    memory: "${MEMORY_REQUEST}"
+                    cpu: "${CPU_REQUEST}"
+                volumes:
+                - name: output
+                  persistentVolumeClaim:
+                    claimName: db-deletion-dump
+              restartPolicy: OnFailure
