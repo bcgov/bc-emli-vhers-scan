@@ -12,7 +12,7 @@ parameters:
     required: true
   - name: IMAGE_TAG
     description: Image tag to use
-    value: dev
+    value: latest
   - name: NAME_SPACE
     value: c82b4c-tools
     required: true
