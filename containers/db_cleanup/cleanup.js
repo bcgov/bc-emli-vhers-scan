@@ -18,7 +18,6 @@ const pg = require('knex')({
 	  database: process.env.DB_NAME,
 	  password: process.env.DB_PASSWORD,
 	},
-	pool: {min: 0, max: parseInt(process.env.DB_MAX_POOL)}
 });
 
 const retentionIntervalMonths = Math.abs(parseInt(process.env.RENTENTION_MONTHS));
