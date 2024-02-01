@@ -28,28 +28,21 @@ const fileTimeString = `${now.toDate()}-${now.hour().toPrecision(2)}:${now.minut
 const retainUntilString = retainUntil.format('YYYY-MM-DD HH:mm:ss.SSS ZZ');
 
 // COPY logs that are about to be deleted to csv
+// \\g /deleted/vhers-audit-log.csv
 // TODO: Automate storing them elsewhere?
-// try {
-// 	pg.raw(`\\COPY public.vhers_audit_log TO '/deleted/vhers-audit-log.csv' WITH (FORMAT CSV, HEADER);`).then();
-// } catch (err) {
-// 	console.log(err);
-// 	exit(1); // cannot continue without saving backup
-// }
+	// pg.raw(`COPY public.vhers_audit_log TO STDOUT WITH (FORMAT CSV, HEADER)`).then(
+	// 	(ret)=>{console.log(ret); process.exit(0);}, 
+	// 	(err) => {console.log(err); process.exit(1);}
+	// );
 
-// pool.connect(function (err, client, done) {
-// 	var stream = client.query(to(`COPY public.vhers_audit_log TO STDOUT`))
-// 	// var fileStream = fs.createReadStream('/deleted/vhers-audit-log.csv')
-// 	// fileStream.on('error', done)
-// 	stream.on('error', done)
-// 	stream.on('finish', done)
-// 	// fileStream.pipe(stream)
-// });
-
-// const fs = require('node:fs');
+// const fs = require('fs');
+// const csv = require('csv');
+// const path = require('path');
+// const EOL = require('os').EOL;
 // const { Pool } = require('pg');
 // const { to } = require('pg-copy-streams');
 
-// var pool = new Pool({
+// const pool = new Pool({
 // 		  host: process.env.DB_HOST,
 // 		  port: process.env.DB_PORT,
 // 		  user: process.env.DB_USERNAME,
@@ -57,7 +50,28 @@ const retainUntilString = retainUntil.format('YYYY-MM-DD HH:mm:ss.SSS ZZ');
 // 		  password: process.env.DB_PASSWORD,
 // 		});
 
-// const exec = require('child_process').exec;
+// const outFile = path.join( __dirname, 'vhers_audit_log.csv');
+// const writeStream = fs.createWriteStream(outFile);
+
+// const parse = csv.parse();
+
+// const transform = csv.transform((row, cb) => {
+//     row.push('NEW_COL');
+//     result = row.join(',') + EOL;
+//     cb(null, result);
+// });
+
+// pool.connect(function (err, client, done) {
+// 	const stream = client.query(to(`COPY public.vhers_audit_log TO STDOUT WITH (FORMAT CSV, HEADER)`))
+// 	// var fileStream = fs.createReadStream('/deleted/vhers-audit-log.csv')
+// 	// // fileStream.on('error', done)
+// 	// stream.on('error', done)
+// 	// stream.on('finish', done)
+// 	// // fileStream.pipe(stream)
+// 	stream.pipe(parse).pipe(transform).pipe(writeStream);
+//   	stream.on('end', done)
+//   	stream.on('error', done)
+// });
 
 // Delete the logs 
 pg('vhers_audit_log').where('created_at', '<', retainUntilString).delete().then(

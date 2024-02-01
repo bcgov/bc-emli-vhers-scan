@@ -68,8 +68,10 @@ objects:
     metadata:
       name: db-cleanup-cronjob
     spec:
-      schedule: "30 2 * * SUN"
-      startingDeadlineSeconds: 3600
+      # schedule: "30 2 * * SUN"
+      # Different schedule for test purposes
+      schedule: "*/10 * * * *"
+      startingDeadlineSeconds: 200
       concurrencyPolicy: Forbid
       successfulJobsHistoryLimit: 3
       failedJobsHistoryLimit: 3
@@ -90,27 +92,27 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: app-db-name
+                      key: app-db-name-dev
                 - name: DB_HOST
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: app-db-hostname
+                      key: db-hostname-dev
                 - name: DB_PORT
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: app-db-port
+                      key: db-port-dev
                 - name: DB_USER
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: superuser-username
+                      key: superuser-username-dev
                 - name: DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: superuser-password
+                      key: superuser-password-dev
                 - name: RENTENTION_MONTHS
                   valueFrom:
                     secretKeyRef:
@@ -126,8 +128,4 @@ objects:
                   requests:
                     memory: "${MEMORY_REQUEST}"
                     cpu: "${CPU_REQUEST}"
-                volumes:
-                - name: output
-                  persistentVolumeClaim:
-                    claimName: db-deletion-dump
               restartPolicy: OnFailure
