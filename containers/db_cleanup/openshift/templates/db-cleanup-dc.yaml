@@ -70,7 +70,7 @@ objects:
     spec:
       # schedule: "30 2 * * SUN"
       # Different schedule for test purposes
-      schedule: "*/10 * * * *"
+      schedule: "*/5 * * * *"
       startingDeadlineSeconds: 200
       concurrencyPolicy: Forbid
       successfulJobsHistoryLimit: 3
