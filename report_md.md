@@ -17,7 +17,7 @@
 
 | Name | Risk Level | Number of Instances |
 | --- | --- | --- |
-| CSP: Wildcard Directive | Medium | 3 |
+| CSP: Wildcard Directive | Medium | 2 |
 | Cross-Domain Misconfiguration | Medium | 3 |
 | Cookie with SameSite Attribute None | Low | 1 |
 | Permissions Policy Header Not Set | Low | 3 |
@@ -66,17 +66,8 @@ The directive(s): frame-ancestors, form-action are among the directives that do 
 frame-ancestors, form-action
 
 The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
-* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
-  * Method: `GET`
-  * Parameter: `content-security-policy`
-  * Attack: ``
-  * Evidence: `default-src 'none'`
-  * Other Info: `The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: 
-frame-ancestors, form-action
 
-The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
-
-Instances: 3
+Instances: 2
 
 ### Solution
 
