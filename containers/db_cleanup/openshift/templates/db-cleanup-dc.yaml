@@ -92,7 +92,7 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: app-db-name-dev
+                      key: db-name-dev
                 - name: DB_HOST
                   valueFrom:
                     secretKeyRef:
