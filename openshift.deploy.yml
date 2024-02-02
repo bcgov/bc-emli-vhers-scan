@@ -141,27 +141,27 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-hostname-dev
+                      key: app-db-hostname-prod
                 - name: DB_PORT
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-port-dev
+                      key: app-db-port-prod
                 - name: DB_NAME
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-name-dev
+                      key: app-db-name-prod
                 - name: DB_USERNAME
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: app-db-username-dev
+                      key: app-db-username-prod
                 - name: DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: app-db-password-dev
+                      key: app-db-password-prod
               ports:
                 - containerPort: 3500
                   protocol: TCP

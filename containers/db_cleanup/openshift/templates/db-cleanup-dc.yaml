@@ -95,27 +95,27 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-name-dev
+                      key: app-db-name-prod
                 - name: DB_HOST
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-hostname-dev
+                      key: app-db-hostname-prod
                 - name: DB_PORT
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-port-dev
+                      key: app-db-port-prod
                 - name: DB_USER
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: superuser-username-dev
+                      key: superuser-username-prod
                 - name: DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: superuser-password-dev
+                      key: superuser-password-prod
                 - name: RENTENTION_MONTHS
                   valueFrom:
                     secretKeyRef:
