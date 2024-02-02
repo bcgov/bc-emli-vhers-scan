@@ -124,8 +124,8 @@ function delete_entries() {
 				() => {
 					vhersClient.end();
 					pinClient.end();
-					sleep(240000).then(() => {console.log(`Successfully deleted audit log entries prior to ${retainUntilString}`);
-					process.exit(0);})
+					console.log(`Successfully deleted audit log entries prior to ${retainUntilString}`);
+					process.exit(0);
 				},
 				(err) => {
 					console.log(err);
