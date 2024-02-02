@@ -1,4 +1,10 @@
 require('dotenv').config();
+const fs = require('fs');
+const csv = require('csv');
+const path = require('path');
+const EOL = require('os').EOL;
+const { Client } = require('pg');
+const { to } = require('pg-copy-streams');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
@@ -20,75 +26,111 @@ const pg = require('knex')({
 	},
 });
 
+const pinClient = new Client({
+		  host: process.env.DB_HOST,
+		  port: process.env.DB_PORT,
+		  user: process.env.DB_USERNAME,
+		  database: process.env.DB_NAME,
+		  password: process.env.DB_PASSWORD,
+});
+
+const vhersClient = new Client({
+	host: process.env.DB_HOST,
+	port: process.env.DB_PORT,
+	user: process.env.DB_USERNAME,
+	database: process.env.DB_NAME,
+	password: process.env.DB_PASSWORD,
+});
+
+// Get timestamps for now and deletion interval
 const retentionIntervalMonths = Math.abs(parseInt(process.env.RENTENTION_MONTHS));
 const now = dayjs();
 const retainUntil = now.subtract(retentionIntervalMonths, 'month');
-const fileTimeString = `${now.toDate()}-${now.hour().toPrecision(2)}:${now.minute().toPrecision(2)}:${now.second().toPrecision(2)}`;
+const fileTimeString = now.format('YYYY-MM-DD-HH-mm-ss');
 const retainUntilString = retainUntil.format('YYYY-MM-DD HH:mm:ss.SSS ZZ');
 
-// change to force deploy
-// COPY logs that are about to be deleted to csv
-// \\g /deleted/vhers-audit-log.csv
-// TODO: Automate storing them elsewhere?
-	// pg.raw(`COPY public.vhers_audit_log TO STDOUT WITH (FORMAT CSV, HEADER)`).then(
-	// 	(ret)=>{console.log(ret); process.exit(0);}, 
-	// 	(err) => {console.log(err); process.exit(1);}
-	// );
+// Create directory for entries
+const dir = `./deleted/${fileTimeString}`
+if (!fs.existsSync(dir)){
+	fs.mkdirSync(dir, { recursive: true });
+}
 
-// const fs = require('fs');
-// const csv = require('csv');
-// const path = require('path');
-// const EOL = require('os').EOL;
-// const { Pool } = require('pg');
-// const { to } = require('pg-copy-streams');
+// Create files
+const vhersOutFile = path.join( __dirname, 'deleted', fileTimeString, 'vhers_audit_log.csv');
+const pinOutFile = path.join( __dirname, 'deleted', fileTimeString, 'pin_audit_log.csv');
+const vhersWriteStream = fs.createWriteStream(vhersOutFile);
+const pinWriteStream = fs.createWriteStream(pinOutFile);
 
-// const pool = new Pool({
-// 		  host: process.env.DB_HOST,
-// 		  port: process.env.DB_PORT,
-// 		  user: process.env.DB_USERNAME,
-// 		  database: process.env.DB_NAME,
-// 		  password: process.env.DB_PASSWORD,
-// 		});
+// Csv transforms
+const parse = csv.parse();
 
-// const outFile = path.join( __dirname, 'vhers_audit_log.csv');
-// const writeStream = fs.createWriteStream(outFile);
+const transform = csv.transform((row, cb) => {
+    result = row.join(',') + EOL;
+    cb(null, result);
+});
 
-// const parse = csv.parse();
+const pinParse = csv.parse();
 
-// const transform = csv.transform((row, cb) => {
-//     row.push('NEW_COL');
-//     result = row.join(',') + EOL;
-//     cb(null, result);
-// });
+const pinTransform = csv.transform((row, cb) => {
+    result = row.join(',') + EOL;
+    cb(null, result);
+});
 
-// pool.connect(function (err, client, done) {
-// 	const stream = client.query(to(`COPY public.vhers_audit_log TO STDOUT WITH (FORMAT CSV, HEADER)`))
-// 	// var fileStream = fs.createReadStream('/deleted/vhers-audit-log.csv')
-// 	// // fileStream.on('error', done)
-// 	// stream.on('error', done)
-// 	// stream.on('finish', done)
-// 	// // fileStream.pipe(stream)
-// 	stream.pipe(parse).pipe(transform).pipe(writeStream);
-//   	stream.on('end', done)
-//   	stream.on('error', done)
-// });
+// Copy functions
+function async_vhers_output() {
+	return new Promise(function(resolve, reject) {
+		const vhersStream = vhersClient.query(to(`COPY (SELECT * FROM public.vhers_audit_log WHERE created_at < '${retainUntilString}') TO STDOUT WITH (FORMAT CSV, HEADER)`));
+		vhersStream.pipe(parse).pipe(transform).pipe(vhersWriteStream);
+		vhersStream.on('end', () => { return resolve()});
+		vhersStream.on('error', (err) => {return reject(err)});
+	})
+}
 
-// Delete the logs 
-pg('vhers_audit_log').where('created_at', '<', retainUntilString).delete().then(
-	() => {
-		pg('pin_audit_log').where('log_created_at', '<', retainUntilString).delete().then(
-			() => {
-				console.log(`Successfully deleted audit log entries prior to ${retainUntilString}`);
-				process.exit(0);
-			},
-			(err) => {
-				console.log(err);
-    			process.exit(1);
-			}
-		);
-	}, 
-	(err) => {
-		console.log(err);
-    	process.exit(1);
-	}
-);
+function async_pin_output() {
+	return new Promise(function(resolve, reject) {
+		const pinStream = pinClient.query(to(`COPY (SELECT * FROM public.pin_audit_log WHERE log_created_at < '${retainUntilString}') TO STDOUT WITH (FORMAT CSV, HEADER)`));
+		pinStream.pipe(pinParse).pipe(pinTransform).pipe(pinWriteStream);
+		pinStream.on('end', () => { return resolve()});
+		pinStream.on('error', (err) => {return reject(err)});
+	})
+}
+
+// Copy function IIFE (this gets arounds not allowing async functions outside of modules)
+( async() => {
+	await vhersClient.connect();
+	await pinClient.connect();
+	const promises = [];
+	promises.push(async_vhers_output());
+	promises.push(async_pin_output());
+	Promise.all(promises).then(function AcceptHandler() {
+		delete_entries();
+	}, function ErrorHandler(error) {
+		console.log(error);
+		process.exit(1);
+	});
+	
+})();
+
+// Entry deletion function
+function delete_entries() {
+	pg('vhers_audit_log').where('created_at', '<', retainUntilString).delete().then(
+		() => {
+			pg('pin_audit_log').where('log_created_at', '<', retainUntilString).delete().then(
+				() => {
+					vhersClient.end();
+					pinClient.end();
+					console.log(`Successfully deleted audit log entries prior to ${retainUntilString}`);
+					process.exit(0);
+				},
+				(err) => {
+					console.log(err);
+					process.exit(1);
+				}
+			);
+		}, 
+		(err) => {
+			console.log(err);
+			process.exit(1);
+		}
+	);
+}
