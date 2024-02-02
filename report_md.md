@@ -28,7 +28,7 @@
 | Sec-Fetch-Mode Header is Missing | Informational | 3 |
 | Sec-Fetch-Site Header is Missing | Informational | 3 |
 | Sec-Fetch-User Header is Missing | Informational | 3 |
-| Session Management Response Identified | Informational | 1 |
+| Session Management Response Identified | Informational | 2 |
 | Storable and Cacheable Content | Informational | 2 |
 
 
@@ -595,8 +595,15 @@ The given response has been identified as containing a session management token.
   * Evidence: `0b338650e95df8cab2271e52067374d5`
   * Other Info: `
 cookie:b364a319754fe5d39a69505b59cbe7d8`
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/
+  * Method: `GET`
+  * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
+  * Attack: ``
+  * Evidence: `0b338650e95df8cab2271e52067374d5`
+  * Other Info: `
+cookie:b364a319754fe5d39a69505b59cbe7d8`
 
-Instances: 1
+Instances: 2
 
 ### Solution
 
