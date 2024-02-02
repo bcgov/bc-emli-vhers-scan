@@ -50,14 +50,15 @@ const fileTimeString = now.format('YYYY-MM-DD-HH-mm-ss');
 const retainUntilString = retainUntil.format('YYYY-MM-DD HH:mm:ss.SSS ZZ');
 
 // Create directory for entries
-const dir = `./deleted/${fileTimeString}`
+const dir = path.join(__dirname, '../', `deleted`,`${fileTimeString}`)
 if (!fs.existsSync(dir)){
 	fs.mkdirSync(dir, { recursive: true });
 }
 
 // Create files
-const vhersOutFile = path.join( __dirname, 'deleted', fileTimeString, 'vhers_audit_log.csv');
-const pinOutFile = path.join( __dirname, 'deleted', fileTimeString, 'pin_audit_log.csv');
+const vhersOutFile = path.join( __dirname, '../', 'deleted', fileTimeString, 'vhers_audit_log.csv');
+const pinOutFile = path.join( __dirname, '../', 'deleted', fileTimeString, 'pin_audit_log.csv');
+
 const vhersWriteStream = fs.createWriteStream(vhersOutFile);
 const pinWriteStream = fs.createWriteStream(pinOutFile);
 

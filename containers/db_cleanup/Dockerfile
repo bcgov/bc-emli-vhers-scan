@@ -5,6 +5,7 @@ WORKDIR /app
 
 # Ensure that the user can access all application files
 RUN chmod -R g+rwX /app
+RUN chmod -R g+rwX /deleted
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
