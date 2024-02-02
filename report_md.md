@@ -17,18 +17,18 @@
 
 | Name | Risk Level | Number of Instances |
 | --- | --- | --- |
-| CSP: Wildcard Directive | Medium | 2 |
+| CSP: Wildcard Directive | Medium | 3 |
 | Cross-Domain Misconfiguration | Medium | 3 |
-| Cookie with SameSite Attribute None | Low | 1 |
+| Cookie with SameSite Attribute None | Low | 2 |
 | Permissions Policy Header Not Set | Low | 3 |
 | Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s) | Low | 3 |
 | Strict-Transport-Security Header Not Set | Low | 3 |
-| Non-Storable Content | Informational | 1 |
+| Non-Storable Content | Informational | 2 |
 | Sec-Fetch-Dest Header is Missing | Informational | 3 |
 | Sec-Fetch-Mode Header is Missing | Informational | 3 |
 | Sec-Fetch-Site Header is Missing | Informational | 3 |
 | Sec-Fetch-User Header is Missing | Informational | 3 |
-| Session Management Response Identified | Informational | 2 |
+| Session Management Response Identified | Informational | 3 |
 | Storable and Cacheable Content | Informational | 2 |
 
 
@@ -66,8 +66,17 @@ The directive(s): frame-ancestors, form-action are among the directives that do 
 frame-ancestors, form-action
 
 The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
+  * Method: `GET`
+  * Parameter: `content-security-policy`
+  * Attack: ``
+  * Evidence: `default-src 'none'`
+  * Other Info: `The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: 
+frame-ancestors, form-action
 
-Instances: 2
+The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
+
+Instances: 3
 
 ### Solution
 
@@ -155,8 +164,14 @@ A cookie has been set with its SameSite attribute set to "none", which means tha
   * Attack: ``
   * Evidence: `set-cookie: b364a319754fe5d39a69505b59cbe7d8`
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
+  * Attack: ``
+  * Evidence: `set-cookie: b364a319754fe5d39a69505b59cbe7d8`
+  * Other Info: ``
 
-Instances: 1
+Instances: 2
 
 ### Solution
 
@@ -344,8 +359,14 @@ The response contents are not storable by caching components such as proxy serve
   * Attack: ``
   * Evidence: `private`
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: ``
+  * Attack: ``
+  * Evidence: `private`
+  * Other Info: ``
 
-Instances: 1
+Instances: 2
 
 ### Solution
 
@@ -583,18 +604,25 @@ The given response has been identified as containing a session management token.
   * Method: `GET`
   * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
   * Attack: ``
-  * Evidence: `0b338650e95df8cab2271e52067374d5`
+  * Evidence: `d3db25c0098cdee437b1c42ac6a83eb3`
   * Other Info: `
 cookie:b364a319754fe5d39a69505b59cbe7d8`
-* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
   * Method: `GET`
   * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
   * Attack: ``
-  * Evidence: `0b338650e95df8cab2271e52067374d5`
+  * Evidence: `d3db25c0098cdee437b1c42ac6a83eb3`
+  * Other Info: `
+cookie:b364a319754fe5d39a69505b59cbe7d8`
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
+  * Attack: ``
+  * Evidence: `d3db25c0098cdee437b1c42ac6a83eb3`
   * Other Info: `
 cookie:b364a319754fe5d39a69505b59cbe7d8`
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -619,7 +647,7 @@ This is an informational alert rather than a vulnerability and so there is nothi
 
 The response contents are storable by caching components such as proxy servers, and may be retrieved directly from the cache, rather than from the origin server by the caching servers, in response to similar requests from other users.  If the response data is sensitive, personal or user-specific, this may result in sensitive information being leaked. In some cases, this may even result in a user gaining complete control of the session of another user, depending on the configuration of the caching components in use in their environment. This is primarily an issue where "shared" caching servers such as "proxy" caches are configured on the local network. This configuration is typically found in corporate or educational environments, for instance.
 
-* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/
   * Method: `GET`
   * Parameter: ``
   * Attack: ``
