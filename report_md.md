@@ -24,11 +24,11 @@
 | Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s) | Low | 3 |
 | Strict-Transport-Security Header Not Set | Low | 3 |
 | Non-Storable Content | Informational | 1 |
-| Sec-Fetch-Dest Header is Missing | Informational | 2 |
-| Sec-Fetch-Mode Header is Missing | Informational | 2 |
-| Sec-Fetch-Site Header is Missing | Informational | 2 |
-| Sec-Fetch-User Header is Missing | Informational | 2 |
-| Session Management Response Identified | Informational | 2 |
+| Sec-Fetch-Dest Header is Missing | Informational | 3 |
+| Sec-Fetch-Mode Header is Missing | Informational | 3 |
+| Sec-Fetch-Site Header is Missing | Informational | 3 |
+| Sec-Fetch-User Header is Missing | Informational | 3 |
+| Session Management Response Identified | Informational | 1 |
 | Storable and Cacheable Content | Informational | 2 |
 
 
@@ -402,6 +402,12 @@ Specifies how and where the data would be used. For instance, if the value is au
   * Attack: ``
   * Evidence: ``
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: `Sec-Fetch-Dest`
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: ``
 * URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
   * Method: `GET`
   * Parameter: `Sec-Fetch-Dest`
@@ -409,7 +415,7 @@ Specifies how and where the data would be used. For instance, if the value is au
   * Evidence: ``
   * Other Info: ``
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -444,6 +450,12 @@ Allows to differentiate between requests for navigating between HTML pages and r
   * Attack: ``
   * Evidence: ``
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: `Sec-Fetch-Mode`
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: ``
 * URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
   * Method: `GET`
   * Parameter: `Sec-Fetch-Mode`
@@ -451,7 +463,7 @@ Allows to differentiate between requests for navigating between HTML pages and r
   * Evidence: ``
   * Other Info: ``
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -486,6 +498,12 @@ Specifies the relationship between request initiator's origin and target's origi
   * Attack: ``
   * Evidence: ``
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: `Sec-Fetch-Site`
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: ``
 * URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
   * Method: `GET`
   * Parameter: `Sec-Fetch-Site`
@@ -493,7 +511,7 @@ Specifies the relationship between request initiator's origin and target's origi
   * Evidence: ``
   * Other Info: ``
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -528,6 +546,12 @@ Specifies if a navigation request was initiated by a user.
   * Attack: ``
   * Evidence: ``
   * Other Info: ``
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: `Sec-Fetch-User`
+  * Attack: ``
+  * Evidence: ``
+  * Other Info: ``
 * URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
   * Method: `GET`
   * Parameter: `Sec-Fetch-User`
@@ -535,7 +559,7 @@ Specifies if a navigation request was initiated by a user.
   * Evidence: ``
   * Other Info: ``
 
-Instances: 2
+Instances: 3
 
 ### Solution
 
@@ -571,15 +595,8 @@ The given response has been identified as containing a session management token.
   * Evidence: `0b338650e95df8cab2271e52067374d5`
   * Other Info: `
 cookie:b364a319754fe5d39a69505b59cbe7d8`
-* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/
-  * Method: `GET`
-  * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
-  * Attack: ``
-  * Evidence: `0b338650e95df8cab2271e52067374d5`
-  * Other Info: `
-cookie:b364a319754fe5d39a69505b59cbe7d8`
 
-Instances: 2
+Instances: 1
 
 ### Solution
 
