@@ -17,7 +17,7 @@
 
 | Name | Risk Level | Number of Instances |
 | --- | --- | --- |
-| CSP: Wildcard Directive | Medium | 1 |
+| CSP: Wildcard Directive | Medium | 3 |
 | Cross-Domain Misconfiguration | Medium | 3 |
 | Cookie with SameSite Attribute None | Low | 1 |
 | Permissions Policy Header Not Set | Low | 3 |
@@ -28,7 +28,7 @@
 | Sec-Fetch-Mode Header is Missing | Informational | 3 |
 | Sec-Fetch-Site Header is Missing | Informational | 3 |
 | Sec-Fetch-User Header is Missing | Informational | 3 |
-| Session Management Response Identified | Informational | 2 |
+| Session Management Response Identified | Informational | 1 |
 | Storable and Cacheable Content | Informational | 2 |
 
 
@@ -48,6 +48,24 @@
 
 Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks. Including (but not limited to) Cross Site Scripting (XSS), and data injection attacks. These attacks are used for everything from data theft to site defacement or distribution of malware. CSP provides a set of standard HTTP headers that allow website owners to declare approved sources of content that browsers should be allowed to load on that page — covered types are JavaScript, CSS, HTML frames, fonts, images and embeddable objects such as Java applets, ActiveX, audio and video files.
 
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/
+  * Method: `GET`
+  * Parameter: `content-security-policy`
+  * Attack: ``
+  * Evidence: `default-src 'none'`
+  * Other Info: `The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: 
+frame-ancestors, form-action
+
+The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
+* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/robots.txt
+  * Method: `GET`
+  * Parameter: `content-security-policy`
+  * Attack: ``
+  * Evidence: `default-src 'none'`
+  * Other Info: `The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined: 
+frame-ancestors, form-action
+
+The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
 * URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/sitemap.xml
   * Method: `GET`
   * Parameter: `content-security-policy`
@@ -58,7 +76,7 @@ frame-ancestors, form-action
 
 The directive(s): frame-ancestors, form-action are among the directives that do not fallback to default-src, missing/excluding them is the same as allowing anything.`
 
-Instances: 1
+Instances: 3
 
 ### Solution
 
@@ -577,15 +595,8 @@ The given response has been identified as containing a session management token.
   * Evidence: `0b338650e95df8cab2271e52067374d5`
   * Other Info: `
 cookie:b364a319754fe5d39a69505b59cbe7d8`
-* URL: https://vhers-virus-scan-tools-c82b4c-tools.apps.silver.devops.gov.bc.ca/
-  * Method: `GET`
-  * Parameter: `b364a319754fe5d39a69505b59cbe7d8`
-  * Attack: ``
-  * Evidence: `0b338650e95df8cab2271e52067374d5`
-  * Other Info: `
-cookie:b364a319754fe5d39a69505b59cbe7d8`
 
-Instances: 2
+Instances: 1
 
 ### Solution
 
