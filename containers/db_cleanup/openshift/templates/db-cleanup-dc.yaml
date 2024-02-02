@@ -68,9 +68,9 @@ objects:
     metadata:
       name: db-cleanup-cronjob
     spec:
-      schedule: "30 2 * * SUN"
+      # schedule: "30 2 * * SUN"
       # Different schedule for test purposes
-      # schedule: "*/5 * * * *"
+      schedule: "*/5 * * * *"
       startingDeadlineSeconds: 200
       concurrencyPolicy: Forbid
       successfulJobsHistoryLimit: 3
@@ -89,7 +89,7 @@ objects:
                 imagePullPolicy: Always
                 volumeMounts:
                 - mountPath: "/deleted"
-                  name: deleted
+                  name: output
                 env:  # Use environment variables for Secret values
                 - name: DB_NAME
                   valueFrom:

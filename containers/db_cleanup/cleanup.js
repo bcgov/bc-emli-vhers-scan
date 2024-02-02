@@ -111,6 +111,10 @@ function async_pin_output() {
 	
 })();
 
+function sleep(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // Entry deletion function
 function delete_entries() {
 	pg('vhers_audit_log').where('created_at', '<', retainUntilString).delete().then(
@@ -119,8 +123,8 @@ function delete_entries() {
 				() => {
 					vhersClient.end();
 					pinClient.end();
-					console.log(`Successfully deleted audit log entries prior to ${retainUntilString}`);
-					process.exit(0);
+					sleep(240000).then(() => {console.log(`Successfully deleted audit log entries prior to ${retainUntilString}`);
+					process.exit(0);})
 				},
 				(err) => {
 					console.log(err);
