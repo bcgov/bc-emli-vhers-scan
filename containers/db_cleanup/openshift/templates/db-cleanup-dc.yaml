@@ -68,10 +68,9 @@ objects:
     metadata:
       name: db-cleanup-cronjob
     spec:
-      # schedule: "30 2 * * SUN"
+      schedule: "30 2 * * SUN"
       # Different schedule for test purposes
-      # change for rebuild
-      schedule: "*/5 * * * *"
+      # schedule: "*/5 * * * *"
       startingDeadlineSeconds: 200
       concurrencyPolicy: Forbid
       successfulJobsHistoryLimit: 3
