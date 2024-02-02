@@ -1,0 +1,19 @@
+{
+  "name": "db_cleanup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cleanup.js",
+  "scripts": {
+    "cleanup": "node cleanup.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv": "^6.3.6",
+    "dayjs": "^1.11.10",
+    "dotenv": "^16.4.1",
+    "knex": "^3.1.0",
+    "pg": "^8.11.3",
+    "pg-copy-streams": "^6.0.6"
+  }
+}

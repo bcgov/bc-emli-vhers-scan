@@ -24,7 +24,7 @@ parameters:
   - name: CPU_REQUEST
     value: "100m"
   - name: CPU_LIMIT
-    value: "1100m"
+    value: "500m"
   - name: MEMORY_REQUEST
     value: "500M"
   - name: MEMORY_LIMIT
@@ -39,7 +39,7 @@ parameters:
     value: bcgov
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
-    value: bcgov/vhers-virus-scan-tools/vhers-virus-scan:latest
+    value: bcgov/bc-emli-vhers-scan/vhers-virus-scan:latest
 objects:
   - kind: ImageStream
     apiVersion: v1
@@ -141,27 +141,27 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-hostname-dev
+                      key: app-db-hostname-prod
                 - name: DB_PORT
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-port-dev
+                      key: app-db-port-prod
                 - name: DB_NAME
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: db-name-dev
+                      key: app-db-name-prod
                 - name: DB_USERNAME
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: app-db-username-dev
+                      key: app-db-username-prod
                 - name: DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: patroni-ha-postgres-instance
-                      key: app-db-password-dev
+                      key: app-db-password-prod
               ports:
                 - containerPort: 3500
                   protocol: TCP
