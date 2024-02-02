@@ -39,7 +39,7 @@ parameters:
     value: bcgov
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
-    value: bcgov/vhers-virus-scan-tools/vhers-virus-scan:latest
+    value: bcgov/bc-emli-vhers-scan/vhers-virus-scan:latest
 objects:
   - kind: ImageStream
     apiVersion: v1
